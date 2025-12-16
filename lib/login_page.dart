@@ -1,49 +1,20 @@
 import 'package:flutter/material.dart';
 
+import 'i18n/i18n_en.dart' show en;
+import 'i18n/i18n_hi.dart' show hi;
 
-/// LANGUAGE MAP
+class LoginPage extends StatelessWidget {
+  final String currentLang;
+  final Function(String) onLangChange;
 
-Map<String, Map<String, String>> translations = {
-  'en': {
-    'login': 'Login',
-    'email': 'Email',
-    'password': 'Password',
-    'forgot': 'Forgot Password?',
-    'change_lang': 'Change Language',
-    'english': 'English',
-    'hindi': 'Hindi',
-  },
-  'hi': {
-    'login': 'लॉगिन',
-    'email': 'ईमेल',
-    'password': 'पासवर्ड',
-    'forgot': 'पासवर्ड भूल गए?',
-    'change_lang': 'भाषा बदलें',
-    'english': 'अंग्रेज़ी',
-    'hindi': 'हिंदी',
-  },
-};
+  const LoginPage({
+    super.key,
+    required this.currentLang,
+    required this.onLangChange,
+  });
 
-
-/// TRANSLATION FUNCTION
-
-String tr(String key, String lang) {
-  return translations[lang]?[key] ?? key;
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  bool isPasswordVisible = false;
-  String currentLang = 'en'; // default
+  Map<String, String> get text =>
+      currentLang == 'hi' ? hi : en;
 
   @override
   Widget build(BuildContext context) {
@@ -51,41 +22,34 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.indigo,
       body: Center(
         child: Container(
-
-          width: 500,
-          padding: const EdgeInsets.all(30),
+          width: 380,
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.indigoAccent,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
-              /// TITLE
-
+              // TITLE
               Text(
-                tr('login', currentLang),
+                text["login"]!,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 32,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-
-              /// EMAIL
-
+              // EMAIL
               TextField(
-                controller: emailController,
-                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  hintText: tr('email', currentLang),
-                  hintStyle: const TextStyle(color: Colors.black),
+                  hintText: text["email"],
                   filled: true,
                   fillColor: Colors.white,
+                  hintStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -93,33 +57,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-
-              /// PASSWORD
-
+              // PASSWORD
               TextField(
-                controller: passwordController,
-                obscureText: !isPasswordVisible,
-                style: const TextStyle(color: Colors.black),
+                obscureText: true,
                 decoration: InputDecoration(
-                  hintText: tr('password', currentLang),
-                  hintStyle: const TextStyle(color: Colors.black),
+                  hintText: text["password"],
                   filled: true,
                   fillColor: Colors.white,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.white54,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
-                    },
-                  ),
+                  hintStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -127,79 +74,53 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-
-              /// LOGIN BUTTON
-
+              // LOGIN BUTTON
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 48,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.indigo,
                   ),
                   onPressed: () {},
-                  child: Text(
-                    tr('login', currentLang),
-                    style: const TextStyle(fontSize: 18,color: Colors.white),
-                  ),
+                  child: Text(text["login"]!),
                 ),
               ),
 
-              const SizedBox(height: 20),
-
-
-              /// FORGOT PASSWORD
+              const SizedBox(height: 15),
 
               TextButton(
                 onPressed: () {},
                 child: Text(
-                  tr('forgot', currentLang),
-                  style: const TextStyle(color: Colors.white,
-                    decoration: TextDecoration.underline,),
-
+                  text["forgot"]!,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
 
+              const Divider(color: Colors.white24),
 
-              /// CHANGE LANGUAGE (POPUP)
-
+              // 🔽 CHANGE LANGUAGE BUTTON WITH OPTIONS
               PopupMenuButton<String>(
-                onSelected: (value) {
-                  setState(() {
-                    currentLang = value;
-                  });
-                },
+                onSelected: onLangChange,
                 color: Colors.white,
-                itemBuilder: (context) => [
+                itemBuilder: (context) => const [
                   PopupMenuItem(
                     value: 'en',
-                    child: Text(
-                      tr('english', currentLang),
-                      style:  TextStyle(color: Colors.black,
-                        decoration: TextDecoration.underline,),
-                    ),
+                    child: Text('English'),
                   ),
                   PopupMenuItem(
                     value: 'hi',
-                    child: Text(
-                      tr('hindi', currentLang),
-                      style:  TextStyle(color: Colors.black,
-                        decoration: TextDecoration.underline,),
-
-                    ),
+                    child: Text('Hindi'),
                   ),
                 ],
-                child: Text(
-                  tr('change_lang', currentLang),
-                  style: const TextStyle(
+                child: const Text(
+                  "Change Language",
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
-                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
